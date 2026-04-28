@@ -22,3 +22,34 @@ with st.sidebar:
             for i,img in enumerate(images):
                 with col[i]:
                     st.image(img)
+    #dificulties
+    st.markdown(
+        """
+        <style>
+        div[data-baseweb="select"] {
+            cursor: pointer;
+        }
+        div[data-baseweb="select"] * {
+            cursor: pointer;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    selected_Option = st.selectbox(
+        "Select quiz difficulty",
+        ["Easy", "Medium", "Hard"],
+        index = None,
+        )
+    if selected_Option:
+        st.markdown(f"You selected: **{selected_Option}**")
+    else:
+        st.error("Please select a difficulty level.")
+
+    #button to generate notes and quizzes
+    st.button(
+        "Click the button to generate notes and quizzes", 
+        type="primary", 
+        key="generate_button"
+        )
