@@ -8,6 +8,7 @@ st.divider()
 #sidebar
 with st.sidebar:
     st.header("Control Panel")
+    
     #images uploader
     images = st.file_uploader("Upload your images here", 
     type=["jpg", "jpeg", "png"], 
@@ -44,12 +45,45 @@ with st.sidebar:
         )
     if selected_Option:
         st.markdown(f"You selected: **{selected_Option}**")
-    else:
-        st.error("Please select a difficulty level.")
+    # else:
+    #     st.error("Please select a difficulty level.")
 
     #button to generate notes and quizzes
-    st.button(
+    pressed = st.button(
         "Click the button to generate notes and quizzes", 
         type="primary", 
         key="generate_button"
         )
+
+# Main content area
+if pressed:
+    if not images:
+        st.error("Please upload 3 images to generate notes and quizzes.")
+    # elif len(images) != 3:
+    #     st.error("Please upload exactly 3 images.")
+    elif not selected_Option:
+        st.error("Please select a difficulty level.")
+    else:
+        st.success("Generating notes and quizzes...")
+    if images and selected_Option:
+        
+        #note container
+        with st.container(border= True):
+            st.subheader("Generated Notes")
+            st.markdown(f"Here are the notes generated from the uploaded images with **{selected_Option} difficulty.**")
+            # Placeholder for generated notes
+            st.text("Generated notes will appear here")
+        
+        #audio container
+        with st.container(border= True):
+            st.subheader("Generated Audio")
+            st.markdown(f"Here is the audio generated from the notes with **{selected_Option} difficulty.**")
+            # Placeholder for generated audio
+            st.text("Generated audio will appear here")
+
+        #quiz container
+        with st.container(border= True):
+            st.subheader("Generated Quiz")
+            st.markdown(f"Here is the quiz generated from the notes with **{selected_Option} difficulty.**")
+            # Placeholder for generated quiz
+            st.text("Generated quiz will appear here")
