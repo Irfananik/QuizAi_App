@@ -1,6 +1,8 @@
 from google import genai
 from dotenv import load_dotenv
 import os
+from io import BytesIO
+from gtts import gTTS
 
 # Load environment variables from .env file
 load_dotenv()
@@ -24,3 +26,10 @@ def generate_notes(image_urls):
         # },
     )
     return response.text.strip()
+
+#audio generation function
+def generate_audio(text):
+    speech = gTTS(text=text, lang='en', slow=False)
+    audio_buffer = BytesIO()
+    speech.write_to_fp(audio_buffer)
+    return audio_buffer.getvalue()

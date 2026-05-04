@@ -1,5 +1,5 @@
 import streamlit as st
-from api_call import generate_notes
+from api_call import generate_notes, generate_audio
 from PIL import Image
 import io
 
@@ -86,9 +86,16 @@ if pressed:
         #audio container
         with st.container(border= True):
             st.subheader("Generated Audio")
-            st.markdown(f"Here is the audio generated from the notes with **{selected_Option} difficulty.**")
             # Placeholder for generated audio
-            st.text("Generated audio will appear here")
+        with st.spinner("Generating audio..."):
+            response = response.replace("\n", " ")
+            response = response.replace("#", "")
+            response = response.replace("*", "")
+            response = response.replace("-", "")
+            response = response.replace("**", "")
+            response = response.replace("_", "")
+            audio_response = generate_audio(response)
+            st.audio(audio_response, format="audio/wav")
 
         #quiz container
         with st.container(border= True):
