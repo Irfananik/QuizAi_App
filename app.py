@@ -1,4 +1,7 @@
 import streamlit as st
+from api_call import generate_notes
+from PIL import Image
+import io
 
 # Set page title and description
 st.title("Note summary and quiz generator from images")
@@ -13,6 +16,11 @@ with st.sidebar:
     images = st.file_uploader("Upload your images here", 
     type=["jpg", "jpeg", "png"], 
     accept_multiple_files=True, key="image_uploader")
+
+    pil_images = []
+    for img in images:
+        image = Image.open(io.BytesIO(img.read()))
+        pil_images.append(image)
 
     if images:
         if len(images) > 3:
@@ -63,16 +71,17 @@ if pressed:
     #     st.error("Please upload exactly 3 images.")
     elif not selected_Option:
         st.error("Please select a difficulty level.")
-    else:
-        st.success("Generating notes and quizzes...")
+    # else:
+    #     st.success("Generating notes and quizzes...")
     if images and selected_Option:
         
         #note container
         with st.container(border= True):
             st.subheader("Generated Notes")
-            st.markdown(f"Here are the notes generated from the uploaded images with **{selected_Option} difficulty.**")
-            # Placeholder for generated notes
-            st.text("Generated notes will appear here")
+            # st.markdown(f"Here are the notes generated from the uploaded images with **{selected_Option} difficulty.**")
+            with st.spinner("Generating notes..."):
+                response = generate_notes([img.name for img in images])
+                st.markdown(response)
         
         #audio container
         with st.container(border= True):
