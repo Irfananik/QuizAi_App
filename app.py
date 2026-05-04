@@ -1,5 +1,6 @@
 import streamlit as st
-from api_call import generate_notes, generate_audio
+from api_call import generate_notes, generate_audio, generate_quiz
+from error_handle import show_api_error
 from PIL import Image
 import io
 
@@ -80,21 +81,25 @@ if pressed:
             st.subheader("Generated Notes")
             # st.markdown(f"Here are the notes generated from the uploaded images with **{selected_Option} difficulty.**")
             with st.spinner("Generating notes..."):
-                response = generate_notes([img.name for img in images])
-                st.markdown(response)
+                try:
+                    notes_response = generate_notes([img.name for img in images])
+                    st.markdown(notes_response)
+                except Exception as exc:
+                    show_api_error(exc)
+                    st.stop()
         
         #audio container
         with st.container(border= True):
             st.subheader("Generated Audio")
             # Placeholder for generated audio
         with st.spinner("Generating audio..."):
-            response = response.replace("\n", " ")
-            response = response.replace("#", "")
-            response = response.replace("*", "")
-            response = response.replace("-", "")
-            response = response.replace("**", "")
-            response = response.replace("_", "")
-            audio_response = generate_audio(response)
+            audio_text = notes_response.replace("\n", " ")
+            audio_text = audio_text.replace("#", "")
+            audio_text = audio_text.replace("*", "")
+            audio_text = audio_text.replace("-", "")
+            audio_text = audio_text.replace("**", "")
+            audio_text = audio_text.replace("_", "")
+            audio_response = generate_audio(audio_text)
             st.audio(audio_response, format="audio/wav")
 
         #quiz container
@@ -102,4 +107,9 @@ if pressed:
             st.subheader("Generated Quiz")
             st.markdown(f"Here is the quiz generated from the notes with **{selected_Option} difficulty.**")
             # Placeholder for generated quiz
-            st.text("Generated quiz will appear here")
+            with st.spinner("Generating quiz..."):
+                try:
+                    quiz_response = generate_quiz(notes_response, selected_Option)
+                    st.markdown(quiz_response)
+                except Exception as exc:
+                    show_api_error(exc)
